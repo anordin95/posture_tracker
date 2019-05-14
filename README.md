@@ -1,4 +1,4 @@
-# Project Title
+# Posture Tracker
 
 A friend to help keep your posture consistent! 
 
