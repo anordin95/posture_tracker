@@ -29,7 +29,7 @@ The script will encourage your good behavior. When your posture wanes, it will r
 
 ## Built With
 
-* [opencv](http://www.dropwizard.io/1.0.2/docs/) - Responsible for the computer vision
+* [opencv](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_tutorials.html) - Responsible for the computer vision
 
 ## Authors
 
