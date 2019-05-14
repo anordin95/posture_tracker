@@ -6,7 +6,10 @@ import cv2
 
 class PostureTracker:
 
-    def __init__(self, face_model_filepath, calibration_time, check_peridicity, positive_reinforcement_periodicity, display_feed):
+    def __init__(self, face_model_filepath, calibration_time, 
+        check_peridicity, positive_reinforcement_periodicity, 
+        display_feed, performance_tracker):
+        
         self.face_cascade = cv2.CascadeClassifier(face_model_filepath)
         self.video_capture = cv2.VideoCapture(0)
         self.calibration_time = calibration_time #seconds
@@ -14,6 +17,7 @@ class PostureTracker:
         self.positive_reinforcement_periodicity = positive_reinforcement_periodicity
         self.display_feed = display_feed
         self.proper_face_area = None
+        self.performance_tracker = performance_tracker
 
     def calibrate(self):
         start = time.time()
@@ -42,7 +46,7 @@ class PostureTracker:
 
         return max_area_face    
 
-    def is_posture_changed(self, current_face):
+    def is_bad_posture(self, current_face):
         if self.proper_face_area is None:
             raise ValueError("Cannot track posture unless the tracker is calibrated. ")
 
@@ -64,17 +68,15 @@ class PostureTracker:
             if self.display_feed:
                 # Draw a rectangle around the faces
                 PostureTracker.draw_face_rectangle(max_area_face, frame)
-                
                 # Display the resulting frame
                 cv2.imshow('Video', frame)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-            if self.is_posture_changed(max_area_face):
+            if self.is_bad_posture(max_area_face):
+                self.performance_tracker.bad_posture_checkin()
                 os.system("say 'Fix your posture!'")
                 continuous_proper_posture_checkins = 0
             else:
+                self.performance_tracker.good_posture_checkin()
                 continuous_proper_posture_checkins += 1
                 if continuous_proper_posture_checkins % num_checkins_for_positive_reinforcement == 0:
                     os.system("say 'Keep up the good work!'")
