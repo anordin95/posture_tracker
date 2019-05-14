@@ -6,11 +6,12 @@ import cv2
 
 class PostureTracker:
 
-    def __init__(self, face_model_filepath, calibration_time, check_peridicity, display_feed):
+    def __init__(self, face_model_filepath, calibration_time, check_peridicity, positive_reinforcement_periodicity, display_feed):
         self.face_cascade = cv2.CascadeClassifier(face_model_filepath)
         self.video_capture = cv2.VideoCapture(0)
         self.calibration_time = calibration_time #seconds
         self.check_periodicity = check_peridicity #seconds
+        self.positive_reinforcement_periodicity = positive_reinforcement_periodicity
         self.display_feed = display_feed
         self.proper_face_area = None
 
@@ -50,6 +51,8 @@ class PostureTracker:
         return abs(self.proper_face_area - current_face_area) > 0.2 * self.proper_face_area
 
     def track(self):
+        continuous_proper_posture_checkins = 0
+        num_checkins_for_positive_reinforcement = int(self.positive_reinforcement_periodicity / self.check_periodicity)
         while True:
             ret, frame = self.video_capture.read()
             max_area_face = self.process_frame(frame)
@@ -70,8 +73,11 @@ class PostureTracker:
 
             if self.is_posture_changed(max_area_face):
                 os.system("say 'Fix your posture!'")
+                continuous_proper_posture_checkins = 0
             else:
-                os.system("say 'Keep up the good work!'")
+                continuous_proper_posture_checkins += 1
+                if continuous_proper_posture_checkins % num_checkins_for_positive_reinforcement == 0:
+                    os.system("say 'Keep up the good work!'")
 
             time.sleep(self.check_periodicity)
 

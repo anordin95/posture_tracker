@@ -20,7 +20,7 @@ conda install python=3.7
 Using the tool is simple!
 
 ```
-python live_face_tracking.py
+python posture_tracker/main.py
 ```
 
 The script will encourage your good behavior. When your posture wanes, it will remind you to shape up!
