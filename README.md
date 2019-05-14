@@ -19,8 +19,6 @@ conda install python=3.7
 
 Using the tool is simple!
 
-Say what the step will be
-
 ```
 python live_face_tracking.py
 ```
